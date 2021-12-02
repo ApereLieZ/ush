@@ -4,7 +4,7 @@ SRCS = src/*.c
 
 LIB = libmx/libmx.a
 
-CFLAGS = -std=c11 -Wall -Wextra -Werror -Wpedantic 
+CFLAGS = -std=c11 -Wall -Wextra -Werror -Wpedantic -ledit
 
 all: install
 
