@@ -1,0 +1,4 @@
+# ush
+OWN SHELL
+
+MAC OS ONLY!
