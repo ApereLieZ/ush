@@ -1,16 +1,17 @@
 #include "../inc/ush.h"
-
 // Function to execute builtin commands
 int exec_own_cmds(char** parsed) {
-    int amount = 5, switch_args = 0;
+
+    int amount = 7, switch_args = 0;
     char* cmd_list[amount];
     char* username;
-  
     cmd_list[0] = "exit";
     cmd_list[1] = "cd";
     cmd_list[2] = "pwd";
     cmd_list[3] = "hello";
-    cmd_list[4] = "echo";
+    cmd_list[4] = "export";
+    cmd_list[5] = "unset";
+    cmd_list[6] = "echo";
   
     for (int i = 0; i < amount; i++) {
         if (mx_strcmp(parsed[0], cmd_list[i]) == 0) {
@@ -18,7 +19,6 @@ int exec_own_cmds(char** parsed) {
             break;
         }
     }
-  
     switch (switch_args) {
     case 1:
         exit(0);
@@ -36,6 +36,12 @@ int exec_own_cmds(char** parsed) {
             username);
         return 1;
     case 5:
+        mx_export(parsed);
+        return 1;
+    case 6:        
+        mx_unset(parsed);
+        return 1;
+    case 7:
         echo(parsed);
         return 1;
     default:

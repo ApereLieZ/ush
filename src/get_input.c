@@ -2,7 +2,7 @@
 
 int get_input(char* str) {
     char* buf;
-    buf = readline("\nu$h> ");
+    buf = readline("u$h> ");
     if (strlen(buf) != 0) {
         add_history(buf);
         strcpy(str, buf);
