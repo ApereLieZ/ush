@@ -1,4 +1,5 @@
 #include "../inc/ush.h"
+
 bool comp (char *s1, char *s2) {
     while (*s1 != '\0' && (*s1 == *s2)) {
         s1++;
@@ -6,6 +7,7 @@ bool comp (char *s1, char *s2) {
     }
     return *s1 < *s2;
 }
+
 void mx_export (char** parsed) {
     parsed++;
     if (*parsed) {
@@ -30,6 +32,7 @@ void mx_export (char** parsed) {
             mx_printstr(e[i]);
             mx_printchar('\n');
         }
+        mx_del_strarr(&e);
     }
 }
 
