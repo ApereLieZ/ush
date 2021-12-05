@@ -29,5 +29,7 @@ void mx_pwd();
 char **fix_command_list(char ***input_str);
 int get_amount_cmds(char **input_str);
 
+void mx_unset (char **parsed);
+void mx_export (char** parsed);
 #endif
 
