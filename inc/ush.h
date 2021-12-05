@@ -27,5 +27,6 @@ void exec_sys_cmds(char** parsed);
 int exec_own_cmds(char** parsed);
 void mx_pwd();
 
+int echo(char** param);
 #endif
 
