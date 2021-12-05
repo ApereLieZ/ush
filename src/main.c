@@ -1,21 +1,26 @@
 #include "../inc/ush.h"
 
 int main() {
-    char inputString[MAXCOM], *parsedArgs[MAXLIST];
-    int execFlag = 0;
+    char inputString[MAXCOM], **parsedArgs;
+    int amount, i = 0;
+    char **cmds;
     while (true) {
+        parsedArgs = malloc(sizeof(char*) * MAXLIST);
         // take input
         if (get_input(inputString))
             continue;
         // process
-        execFlag = validate_input(inputString, parsedArgs);
-        // execflag returns zero if there is no command
-        // or it is a builtin command,
-        // 1 if it is a simple command
-  
+        validate_input(inputString, parsedArgs);
+        amount = get_amount_cmds(parsedArgs);
         // execute
-        if (execFlag)
-            exec_sys_cmds(parsedArgs);
+        do {
+            cmds = fix_command_list(&parsedArgs);
+            if(!exec_own_cmds(cmds))
+                exec_sys_cmds(cmds);
+            i++;
+        } while (i < amount);
+        i = 0;
+       //mx_del_strarr(&parsedArgs);
     }
     return 0;
 }

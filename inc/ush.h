@@ -22,10 +22,12 @@
 
 
 int get_input(char* str);
-int validate_input(char* str, char** parsed);
+void validate_input(char* str, char** parsed);
 void exec_sys_cmds(char** parsed);
 int exec_own_cmds(char** parsed);
 void mx_pwd();
+char **fix_command_list(char ***input_str);
+int get_amount_cmds(char **input_str);
 
 #endif
 

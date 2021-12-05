@@ -9,8 +9,9 @@ void exec_sys_cmds(char** parsed) {
         return;
     } else if (pid == 0) {
         if (execvp(parsed[0], parsed) < 0) {
-            mx_printerr("\nush: command not found: ");
+            mx_printerr("ush: command not found: ");
             mx_printerr(parsed[0]);
+            mx_printerr("\n");
         }
         exit(0);
     } else {
