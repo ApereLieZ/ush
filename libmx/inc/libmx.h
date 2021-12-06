@@ -89,6 +89,7 @@ bool mx_isalpha(int c);
 char *mx_strchr(const char *s, int c);
 char **copy_strarr(char **arr, const int size);
 int mx_getopt(int argc, char * const argv[], const char *optstring);
+char *cat_str_array(char **array, char *delim);
 
 extern char *optarg;
 extern int optind, opterr, optopt, optreset;

@@ -4,11 +4,10 @@ int exec_own_cmds(char** parsed) {
 
     int amount = 7, switch_args = 0;
     char* cmd_list[amount];
-    char* username;
     cmd_list[0] = "exit";
     cmd_list[1] = "cd";
     cmd_list[2] = "pwd";
-    cmd_list[3] = "hello";
+    cmd_list[3] = "help";
     cmd_list[4] = "export";
     cmd_list[5] = "unset";
     cmd_list[6] = "echo";
@@ -23,17 +22,13 @@ int exec_own_cmds(char** parsed) {
     case 1:
         exit(0);
     case 2:
-        chdir(parsed[1]);
+        mx_cd(parsed);
         return 1;
     case 3:
         mx_pwd();
         return 1;
     case 4:
-        username = getenv("USER");
-        printf("\nHello %s.\nMind that this is "
-            "not a place to play around."
-            "\nUse help to know more..\n",
-            username);
+        mx_printstr("No one will help you, live in a cursed world you`ve create.");
         return 1;
     case 5:
         mx_export(parsed);
@@ -42,7 +37,7 @@ int exec_own_cmds(char** parsed) {
         mx_unset(parsed);
         return 1;
     case 7:
-        echo(parsed);
+        mx_echo(parsed);
         return 1;
     default:
         break;

@@ -132,7 +132,7 @@ char *mx_parse_echo(char **args, int *flag_n) {
     return str;
 }
 
-int echo(char **args) {
+int mx_echo(char **args) {
     int flag = 0;
     char *str = mx_parse_echo(args, &flag);
 

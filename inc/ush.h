@@ -30,8 +30,12 @@ int get_amount_cmds(char **input_str);
 
 //own funcs
 void mx_pwd();
-int echo(char** param);
+void mx_cd(char **args);
+int mx_echo(char** param);
 void mx_unset (char **parsed);
 void mx_export (char** parsed);
+
+extern char *prev_path;
+extern char *cur_path;
 #endif
 
