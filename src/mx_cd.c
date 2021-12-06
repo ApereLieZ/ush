@@ -2,6 +2,7 @@
 
 char *prev_path = NULL;
 char *cur_path = NULL;
+bool was_in_link;
 
 static void swap_strings(char **str1, char **str2) {
     char *temp = mx_strdup(*str1);
@@ -38,6 +39,11 @@ static void check_flags(char **args, bool *fl_P, bool *fl_s) {
 }
 
 void mx_cd(char **args) {
+
+    // char cur_dir[1024];
+    // getcwd(cur_dir, 1024);
+    // setenv("PWD", cur_dir, 1);
+
     struct stat buf;
     bool fl_P = false, fl_s = false;
     errno = 0;
@@ -57,25 +63,28 @@ void mx_cd(char **args) {
         return;
     }
     
-    if(mx_strcmp(path, "-") == 0) { //cd - 
-        char *temp = mx_replace_substr(prev_path, getenv("HOME"), "~");
-        mx_printstr(temp);
-        mx_printchar('\n');
+    if(mx_strcmp(path, "-") == 0 || (was_in_link && mx_strcmp(path, "..") == 0)) { //cd - 
+        if(!was_in_link) {
+            char *temp = mx_replace_substr(prev_path, getenv("HOME"), "~");
+            mx_printstr(temp);
+            mx_printchar('\n');
+            mx_strdel(&temp);
+        }
         chdir(prev_path);
         swap_strings(&prev_path, &cur_path);
-        mx_strdel(&temp);
+        was_in_link = false;
         return;
     }
 
     char *fixed_path = mx_replace_substr(path, "~", getenv("HOME")); // ~ fix
+    chdir(fixed_path); //default
 
     if(S_ISLNK(buf.st_mode) && !fl_P) {
-        setenv("PWD", realpath(fixed_path, NULL), 1);
+        was_in_link = true;
+        char *pwd = getenv("PWD");
+        setenv("PWD", getenv("OLDPWD"), 1);
+        setenv("OLDPWD", pwd, 1);
     }
-
-    
-
-    chdir(fixed_path); //default
     get_new_pathes(&prev_path, &cur_path);
 
     if(errno == ENOENT) {

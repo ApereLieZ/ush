@@ -21,7 +21,7 @@ void mx_pwd(char** argc) {
     bool fl_P = false;
     parce_flag_pwd(argc, &fl_P);
     char str[1024];
-    getcwd(str, sizeof(str));
+    getcwd(str, 1024);
     if(fl_P) {
         mx_printstr(str);
         mx_printchar('\n');
@@ -31,4 +31,3 @@ void mx_pwd(char** argc) {
     
     
     
-}
