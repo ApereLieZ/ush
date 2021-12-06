@@ -25,7 +25,7 @@ int exec_own_cmds(char** parsed) {
         mx_cd(parsed);
         return 1;
     case 3:
-        mx_pwd();
+        mx_pwd(parsed);
         return 1;
     case 4:
         mx_printstr("No one will help you, live in a cursed world you`ve create.");
