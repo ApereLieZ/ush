@@ -37,5 +37,6 @@ void mx_export (char** parsed);
 
 extern char *prev_path;
 extern char *cur_path;
+extern bool was_in_link;
 #endif
 
