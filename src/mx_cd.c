@@ -81,9 +81,6 @@ void mx_cd(char **args) {
 
     if(S_ISLNK(buf.st_mode) && !fl_P) {
         was_in_link = true;
-        char *pwd = getenv("PWD");
-        setenv("PWD", getenv("OLDPWD"), 1);
-        setenv("OLDPWD", pwd, 1);
     }
     get_new_pathes(&prev_path, &cur_path);
 
