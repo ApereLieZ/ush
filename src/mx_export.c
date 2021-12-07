@@ -11,8 +11,17 @@ bool comp (char *s1, char *s2) {
 void mx_export (char** parsed) {
     parsed++;
     if (*parsed) {
-        while (*parsed) {
-            putenv(*parsed);
+        while (*parsed) {            
+            char *name = mx_strndup(*parsed, mx_get_char_index(*parsed, '='));
+            char *value = mx_strdup(mx_strchr(*parsed, '=') == 0 ? NULL : mx_strchr(*parsed, '='));
+            if(value) {
+                value++;
+                setenv(name, value, 1);
+                value--;
+                mx_strdel(&value);
+            }
+            else setenv(name, "", 1);
+            mx_strdel(&name);
             parsed++;
         }
     }
