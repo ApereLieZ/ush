@@ -20,7 +20,7 @@ int exec_own_cmds(char** parsed) {
     }
     switch (switch_args) {
     case 1:
-        exit(0);
+        mx_exit(parsed);
     case 2:
         mx_cd(parsed);
         return 1;

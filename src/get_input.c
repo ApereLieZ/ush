@@ -5,7 +5,7 @@ int get_input(char* str) {
     buf = readline("u$h> ");
     if (strlen(buf) != 0) {
         add_history(buf);
-        strcpy(str, buf);
+        mx_strcpy(str, buf);
         return 0;
     } else {
         return 1;

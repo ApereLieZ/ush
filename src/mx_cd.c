@@ -39,10 +39,6 @@ static void check_flags(char **args, bool *fl_P, bool *fl_s) {
 }
 
 void mx_cd(char **args) {
-    // char cur_dir[1024];
-    // getcwd(cur_dir, 1024);
-    // setenv("PWD", cur_dir, 1);
-
     struct stat buf;
     bool fl_P = false, fl_s = false;
     int argc = count_args(args);
@@ -63,8 +59,15 @@ void mx_cd(char **args) {
         return;
     }
     
+    if(fl_s && S_ISLNK(buf.st_mode)) { //-s
+        mx_printerr("cd: not a directory: ");
+        mx_printerr(path);
+        mx_printerr("\n");
+        return;
+    }
+
     if(mx_strcmp(path, "-") == 0 || (was_in_link && mx_strcmp(path, "..") == 0)) { //cd - 
-        if(!was_in_link) {
+        if(mx_strcmp(path, "-") == 0) {
             char *temp = mx_replace_substr(prev_path, getenv("HOME"), "~");
             mx_printstr(temp);
             mx_printchar('\n');
@@ -77,11 +80,23 @@ void mx_cd(char **args) {
     }
     
     char *fixed_path = mx_replace_substr(path, "~", getenv("HOME")); // ~ fix
-    chdir(fixed_path); //default
     
-    if(S_ISLNK(buf.st_mode) && !fl_P) {
-        was_in_link = true;
+
+    if(S_ISLNK(buf.st_mode) && !fl_P) { //LINKS
+        was_in_link = true; 
+        setenv("LINKPATH", mx_strjoin(cur_path, mx_strjoin("/", path)), 1);
     }
+
+    if(fixed_path[0] == '$') {
+        fixed_path = mx_replace_substr(fixed_path, "{", "");
+        fixed_path = mx_replace_substr(fixed_path, "}", "");
+        fixed_path++;
+        chdir(getenv(fixed_path));
+        fixed_path--;
+    }
+    else
+        chdir(fixed_path); //default
+   
     
     if(errno == ENOENT) {
         mx_printerr("cd: no such file or directory: ");

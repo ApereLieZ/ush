@@ -1,10 +1,19 @@
 #include "../inc/ush.h"
 
+void signal_catcher(int sig) { 
+  switch(sig) {
+    case SIGINT:
+        exit(0);
+  }
+}
+
 int main() {
     char inputString[MAXCOM], **parsedArgs;
     int amount, i = 0;
     char **cmds;
     while (true) {
+        (void)signal(SIGINT, signal_catcher);
+
         parsedArgs = malloc(sizeof(char*) * MAXLIST);
         // take input
         if (get_input(inputString))

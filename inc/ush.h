@@ -13,13 +13,14 @@
 #include <sys/stat.h>
 #include <sys/ioctl.h>
 #include <sys/xattr.h>
+#include <sys/resource.h>
 #include <pwd.h>
 #include <grp.h>
 #include <time.h>
 #include <string.h>
 #include <sys/wait.h>
 #include <editline/readline.h>
-
+#include <signal.h>
 
 int get_input(char* str);
 void validate_input(char* str, char** parsed);
@@ -34,6 +35,9 @@ void mx_cd(char **args);
 int mx_echo(char** param);
 void mx_unset (char **parsed);
 void mx_export (char** parsed);
+void mx_exit(char **parsed);
+
+void signal_catcher(int sig);
 
 extern char *prev_path;
 extern char *cur_path;

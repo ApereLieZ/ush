@@ -3,7 +3,6 @@
 // Function where the system command is executed
 void exec_sys_cmds(char** parsed) {
     pid_t pid = fork(); 
-
     if (pid == -1) {
         mx_printerr("\nFailed forking child..");
         return;

@@ -26,7 +26,11 @@ void mx_pwd(char** argc) {
         mx_printstr(str);
         mx_printchar('\n');
     }else {
-        system("pwd -L");
+        if(was_in_link){ 
+            mx_printstr(getenv("LINKPATH"));
+            mx_printchar('\n');
+        }
+        else system("pwd -L");
     }
 }
     
