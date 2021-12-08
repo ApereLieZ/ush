@@ -44,8 +44,6 @@ void mx_cd(char **args) {
     int argc = count_args(args);
     check_flags(args, &fl_P, &fl_s);
     char *path = args[argc - 1]; 
-    
-    lstat(path, &buf);
     errno = 0;
     if(!prev_path) { //init pathes
         prev_path = malloc(sizeof(char) * 1024);
@@ -59,13 +57,6 @@ void mx_cd(char **args) {
         return;
     }
     
-    if(fl_s && S_ISLNK(buf.st_mode)) { //-s
-        mx_printerr("cd: not a directory: ");
-        mx_printerr(path);
-        mx_printerr("\n");
-        return;
-    }
-
     if(mx_strcmp(path, "-") == 0 || (was_in_link && mx_strcmp(path, "..") == 0)) { //cd - 
         if(mx_strcmp(path, "-") == 0) {
             char *temp = mx_replace_substr(prev_path, getenv("HOME"), "~");
@@ -80,7 +71,14 @@ void mx_cd(char **args) {
     }
     
     char *fixed_path = mx_replace_substr(path, "~", getenv("HOME")); // ~ fix
-    
+    lstat(fixed_path, &buf);
+
+    if(fl_s && S_ISLNK(buf.st_mode)) { //-s
+        mx_printerr("cd: not a directory: ");
+        mx_printerr(fixed_path);
+        mx_printerr("\n");
+        return;
+    }
 
     if(S_ISLNK(buf.st_mode) && !fl_P) { //LINKS
         was_in_link = true; 
@@ -91,7 +89,10 @@ void mx_cd(char **args) {
         fixed_path = mx_replace_substr(fixed_path, "{", "");
         fixed_path = mx_replace_substr(fixed_path, "}", "");
         fixed_path++;
-        chdir(getenv(fixed_path));
+        if(getenv(fixed_path) == NULL)
+            chdir(getenv("HOME"));
+        else 
+            chdir(getenv(fixed_path));
         fixed_path--;
     }
     else
