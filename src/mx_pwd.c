@@ -24,14 +24,13 @@ void mx_pwd(char** argc) {
     getcwd(str, 1024);
     if(fl_P) {
         mx_printstr(str);
-        mx_printchar('\n');
     }else {
         if(was_in_link){ 
             mx_printstr(getenv("LINKPATH"));
-            mx_printchar('\n');
         }
-        else system("pwd -L");
+        else mx_printstr(str);
     }
+    mx_printchar('\n');
 }
     
     

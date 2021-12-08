@@ -2,7 +2,7 @@
 // Function to execute builtin commands
 int exec_own_cmds(char** parsed) {
 
-    int amount = 7, switch_args = 0;
+    int amount = 8, switch_args = 0;
     char* cmd_list[amount];
     cmd_list[0] = "exit";
     cmd_list[1] = "cd";
@@ -11,6 +11,7 @@ int exec_own_cmds(char** parsed) {
     cmd_list[4] = "export";
     cmd_list[5] = "unset";
     cmd_list[6] = "echo";
+    cmd_list[7] = "which";
   
     for (int i = 0; i < amount; i++) {
         if (mx_strcmp(parsed[0], cmd_list[i]) == 0) {
@@ -39,6 +40,9 @@ int exec_own_cmds(char** parsed) {
     case 7:
         mx_echo(parsed);
         return 1;
+    case 8:
+        //mx_which(parsed);
+        return 0;
     default:
         break;
     }

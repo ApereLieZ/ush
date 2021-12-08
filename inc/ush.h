@@ -32,10 +32,11 @@ int get_amount_cmds(char **input_str);
 //own funcs
 void mx_pwd(char **args);
 void mx_cd(char **args);
-int mx_echo(char** param);
+void mx_echo(char** param);
 void mx_unset (char **parsed);
 void mx_export (char** parsed);
 void mx_exit(char **parsed);
+void mx_which(char** args);
 
 void signal_catcher(int sig);
 
