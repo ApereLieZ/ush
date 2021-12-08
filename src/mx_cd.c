@@ -44,7 +44,6 @@ void mx_cd(char **args) {
     int argc = count_args(args);
     check_flags(args, &fl_P, &fl_s);
     char *path = args[argc - 1]; 
-    errno = 0;
     if(!prev_path) { //init pathes
         prev_path = malloc(sizeof(char) * 1024);
         getcwd(prev_path, 1024);
@@ -72,6 +71,7 @@ void mx_cd(char **args) {
     
     char *fixed_path = mx_replace_substr(path, "~", getenv("HOME")); // ~ fix
     lstat(fixed_path, &buf);
+    errno = 0;
 
     if(fl_s && S_ISLNK(buf.st_mode)) { //-s
         mx_printerr("cd: not a directory: ");

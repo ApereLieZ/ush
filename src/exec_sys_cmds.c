@@ -1,5 +1,6 @@
 #include "../inc/ush.h"
 
+pid_t cur_pid;
 // Function where the system command is executed
 void exec_sys_cmds(char** parsed) {
     pid_t pid = fork(); 
@@ -7,6 +8,7 @@ void exec_sys_cmds(char** parsed) {
         mx_printerr("\nFailed forking child..");
         return;
     } else if (pid == 0) {
+        cur_pid = getpid();
         if (execvp(parsed[0], parsed) < 0) {
             mx_printerr("ush: command not found: ");
             mx_printerr(parsed[0]);

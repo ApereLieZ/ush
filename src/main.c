@@ -3,15 +3,20 @@
 void signal_catcher(int sig) { 
   switch(sig) {
     case SIGINT:
-        printf("catch signal\n");
-        kill(getpid(), sig);
+        //printf("catch signal pid %d\n", wait(NULL));
+        if(wait(NULL) != -1)
+            kill(wait(NULL), sig);
+        
+        (void)signal(SIGINT, SIG_DFL); 
         break;
-    case SIGTERM:
-        printf("catch signal sigterm\n");
-        kill(getpid(), sig);
+    case SIGTSTP:
+        printf("catch signal ctrl z\n");
+        if(wait(NULL) != -1)
+            kill(wait(NULL), sig);
+        (void)signal(SIGTSTP, SIG_DFL); 
         break;
   }
-  (void)signal(SIGINT, SIG_DFL); 
+  
 }
 
 int main() {
@@ -20,7 +25,7 @@ int main() {
     char **cmds;
     while (true) {
         (void)signal(SIGINT, signal_catcher);
-        (void)signal(SIGTERM, signal_catcher);
+        (void)signal(SIGTSTP, signal_catcher);
 
         parsedArgs = malloc(sizeof(char*) * MAXLIST);
         // take input

@@ -36,6 +36,7 @@ int mx_echo(char** param);
 void mx_unset (char **parsed);
 void mx_export (char** parsed);
 void mx_exit(char **parsed);
+void mx_fg(pid_t pid);
 
 void signal_catcher(int sig);
 
