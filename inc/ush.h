@@ -44,5 +44,6 @@ void signal_catcher(int sig);
 extern char *prev_path;
 extern char *cur_path;
 extern bool was_in_link;
+extern pid_t child_pid;
 #endif
 

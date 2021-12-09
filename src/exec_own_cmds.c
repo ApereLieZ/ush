@@ -11,7 +11,7 @@ int exec_own_cmds(char** parsed) {
     cmd_list[4] = "export";
     cmd_list[5] = "unset";
     cmd_list[6] = "echo";
-
+    
     cmd_list[7] = "fg";
 
   
