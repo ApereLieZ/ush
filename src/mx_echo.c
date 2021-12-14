@@ -17,7 +17,7 @@ int parse_flag_echo(char** args, bool *flag_n, bool *flag_e, bool *flag_E) {
 void mx_echo(char **args) {
     int error = 0;
 
-    bool flag_n = false, flag_e = false, flag_E = false, bool_enter = false;
+    bool flag_n = false, flag_e = false, flag_E = false, bool_enter = false, need_space = false;
     int res = parse_flag_echo(args, &flag_n, &flag_e, &flag_E);
     while (--res > 0) ++args;
     if (args) args++;
@@ -38,6 +38,8 @@ void mx_echo(char **args) {
             if(error < 0) return;
 
             while (*srt_args != '\0' && *srt_args != '$' && *srt_args != '{' && *srt_args != '(' && *srt_args != '`') {
+                if (need_space) mx_printchar(' ');
+                else need_space = true;
                 mx_printchar(*srt_args);
                 bool_enter = false;
                 srt_args++;
@@ -47,11 +49,13 @@ void mx_echo(char **args) {
                     extern char **environ;
                     for (int i = 0; environ[i] != NULL; i++) {
                         if(mx_strncmp(name, environ[i], mx_get_char_index(environ[i], '=')) == 0) {
+                            if (need_space) mx_printchar(' ');
+                            else need_space = true; 
+                            bool_enter = false;
                             mx_printstr(&(environ[i][mx_get_char_index(environ[i], '=') + 1]));
                             break;
                         }
                     }
-                    bool_enter = false;
                 }
                 else {
                     temp = mx_parce_dollar_round_br(srt_args, &name, &error);
@@ -62,6 +66,8 @@ void mx_echo(char **args) {
                         char **kostyl = malloc(sizeof(char**) * 2);
                         kostyl[0] = name; 
                         kostyl[1] = NULL;
+                        if (need_space) mx_printchar(' ');
+                        else need_space = true;
                         if(!exec_own_cmds(kostyl))
                             exec_sys_cmds(kostyl);
                         bool_enter = true;
@@ -77,19 +83,27 @@ void mx_echo(char **args) {
                         char **kostyl = malloc(sizeof(char**) * 2);
                         kostyl[0] = name; 
                         kostyl[1] = NULL;
+                        if (need_space) mx_printchar(' ');
+                        else need_space = true;
                         if(!exec_own_cmds(kostyl))
                             exec_sys_cmds(kostyl);
                         bool_enter = true;
                     }
                     else {
-                        if (mx_strlen(srt_args) > 1)
+                        if (mx_strlen(srt_args) > 1) {
+                            if (need_space) mx_printchar(' ');
+                            else need_space = true;
                             mx_printstr(srt_args);
-                        else
+                            bool_enter = false;
+                        }
+                        else {                            
+                            if (need_space) mx_printchar(' ');
+                            else need_space = true;
                             mx_printchar(*srt_args);
+                            bool_enter = false;
+                        }
                         args++;
-                        if (*args) mx_printstr(" ");
                         args--;
-                        bool_enter = false;
                     }
                 }            
                 //if (srt_args) mx_strdel(&srt_args);
@@ -102,7 +116,6 @@ void mx_echo(char **args) {
             else srt_args = NULL;
         }
         args++;
-        if (*args) mx_printchar(' ');
     }
     if (!bool_enter && !(flag_n && kost)) mx_printstr("\n");
 }

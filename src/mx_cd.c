@@ -53,6 +53,9 @@ void mx_cd(char **args) {
         get_new_pathes(&prev_path, &cur_path);
         return;
     }
+
+    if(mx_strcmp(path, ".") == 0) return;
+
     if(path[0] != '/' && path[0] != '-') {
         link_path = path ? update_path(path) : NULL;
     }
@@ -63,7 +66,9 @@ void mx_cd(char **args) {
         // mx_printstr(temp);
         // mx_printchar('\n');
         // mx_strdel(&temp);
+        lstat(prev_path, &buf);
         chdir(prev_path);
+        if(!S_ISLNK(buf.st_mode)) was_in_link = false;
         swap_strings(&prev_path, &cur_path);
         ENV_UPDATE
         return;

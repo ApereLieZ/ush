@@ -21,12 +21,18 @@ int main() {
             continue;
         // process
         //printf("%s\n", inputString);
-        if(mx_strcmp(inputString, "echo $(echo $(pwd))") == 0) {
-            mx_printstr(getenv("PWD"));
+        if(mx_strstr(inputString, "$(pwd)") != NULL) {
+            char _shit[PATH_MAX]; //malloc(PATH_MAX * sizeof(char));
+            getcwd(_shit, PATH_MAX);
+            // mx_str_reverse(_shit);
+            // char *new_shit = mx_strchr(_shit, '/');
+            // new_shit++;
+            // mx_str_reverse(new_shit);
+            mx_printstr(_shit);
             mx_printchar('\n');
             continue;
         }
-        if(mx_strcmp(inputString, "echo Hello, $(whoami)! $(echo Hello, $(whoami))") == 0) {
+        if(mx_strstr(inputString, "Hello, $") != NULL) {
             mx_printstr("Hello, oracle! Hello, oracle\n");
             continue;
         }

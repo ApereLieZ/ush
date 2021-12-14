@@ -11,13 +11,15 @@ all: install
 install: 
 	@make -C libmx/
 	@clang $(CFLAGS) $(SRCS) $(LIB) -o $(NAME)
-	@make clean
 
 uninstall:
 	@rm -rf $(NAME)
 
 clean:
 	@rm -rf $(LIB)	
+cl:
+	@make uninstall
+	@clang $(CFLAGS) $(SRCS) $(LIB) -o $(NAME)
 
 reinstall:
 	@make uninstall

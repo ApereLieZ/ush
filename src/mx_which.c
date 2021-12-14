@@ -88,14 +88,16 @@ int search_proga(char *str, bool flag_s, bool flag_a, char *dir) {
     dir2 = readdir(dir1);
     while (dir2 != NULL) {
         if (mx_strcmp(dir2->d_name, str) == 0) {
-            if (flag_s && !flag_a) {
+            if (!flag_a) {
                 mx_printstr(dir);
                 mx_printchar('/');
                 mx_printstr(dir2->d_name);
                 mx_printchar('\n');
             }
+            
             flag = 0;
-            break;
+            if(!flag_s)
+                break;
         }
         dir2 = readdir(dir1);
     }
@@ -103,7 +105,7 @@ int search_proga(char *str, bool flag_s, bool flag_a, char *dir) {
     return flag;
 }
 
-int go_into_dir(char *str, bool *flag_a, bool *flag_s, int flag) {
+int go_into_dir(char *str, bool flag_a, bool flag_s, int flag) {
     char *temp = NULL;
     int y = 0;
     int r = 0;
@@ -145,7 +147,7 @@ void mx_which(char** parsed) {
 	int flag = 0;
 
 	for (int i = 1 + parse_flag_res; i < size; i++) {
-        flag  = go_into_dir(parsed[i], &flag_a, &flag_s, parse_flag_res);
+        flag  = go_into_dir(parsed[i], flag_a, flag_s, parse_flag_res);
         res = parse_flag_res ? 1 : res;
         if (flag  == 1 && !flag_s && !is_build_in_comand) {
             mx_printstr(parsed[i]);
@@ -154,7 +156,7 @@ void mx_which(char** parsed) {
         if(flag_a) {
             //mx_printint(flag);
             if(flag == 0) mx_printchar('0');
-            else mx_printint(flag);
+            else mx_printchar('1');
             mx_printchar('\n');
         }
         
