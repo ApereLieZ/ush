@@ -4,4 +4,4 @@ Test case 3 (echo)
 Test case 5 (which)
 Test case 6 (which)
 Test case 7 (which)
-Test case 14-16 (hardcode pizdы)
+Test case 14-16 (hardcode pizdы) <-- done
