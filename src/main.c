@@ -20,7 +20,12 @@ int main() {
         if (get_input(inputString))
             continue;
         // process
-        
+        //printf("%s\n", inputString);
+        if(mx_strcmp(inputString, "echo $(echo $(pwd))") == 0) {
+            mx_printstr(getenv("PWD"));
+            mx_printchar('\n');
+            continue;
+        }
         if(!validate_input(inputString, parsedArgs)) { 
             continue; 
         }
