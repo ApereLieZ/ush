@@ -18,26 +18,37 @@ static int count_args(char **args) {
     return i;
 }
 
-bool check_reserved_comands(char** parsed) {
+void check_reserved_comands(char** parsed, bool *flag, bool flag_a) {
 	for(int i = 1; parsed[i] != NULL; i++) {
 		for(int j = 0; build_in_comands[j]; j++) {
 			if(mx_strcmp(parsed[i], build_in_comands[j]) == 0) {
-				mx_printstr(build_in_comands[j]);
-				mx_printstr(": ush built-in command\n");
+                if(!flag_a){
+                    mx_printstr(build_in_comands[j]);
+				    mx_printstr(": ush built-in command\n");
+                }
+				
+                *flag = true;
+                return;
 			}
 		}
 	}
-	return true;
 }
 
 
-bool check_reserved_words(char** parsed) {
+bool check_reserved_words(char** parsed, bool flag_a) {
 	for(int i = 1; parsed[i] != NULL; i++) {
 		for(int j = 0; j < 22; j++) {
 			if(mx_strcmp(parsed[i], reserved_words[j]) == 0) {
-				mx_printstr(reserved_words[j]);
-				mx_printstr(": ush reserved word\n");
+                if(flag_a){
+                    mx_printint(0);
+                    mx_printchar('\n');
+                    
+                }else {
+                    mx_printstr(reserved_words[j]);
+				    mx_printstr(": ush reserved word\n");
+                }
 				return false;
+				
 			}
 		}
 	}
@@ -66,7 +77,7 @@ int parse_flag(char** args, bool *flag_a, bool *flag_s) {
     return z;
 }
 
-int search_proga(char *str, bool flag_s, char *dir) {
+int search_proga(char *str, bool flag_s, bool flag_a, char *dir) {
     DIR *dir1 = NULL;
     struct dirent *dir2;
     int flag = 1;
@@ -77,7 +88,7 @@ int search_proga(char *str, bool flag_s, char *dir) {
     dir2 = readdir(dir1);
     while (dir2 != NULL) {
         if (mx_strcmp(dir2->d_name, str) == 0) {
-            if (flag_s) {
+            if (flag_s && !flag_a) {
                 mx_printstr(dir);
                 mx_printchar('/');
                 mx_printstr(dir2->d_name);
@@ -106,7 +117,7 @@ int go_into_dir(char *str, bool *flag_a, bool *flag_s, int flag) {
         dir = mx_strnew(mx_strlen(temp));
         for (b = y; r >= 0 ? b < r + y : temp[b] != '\0'; b++)
             dir[b - y] = temp[b];
-        if ((flag = search_proga(str, flag_s, dir)) == 1)
+        if ((flag = search_proga(str, flag_s, flag_a, dir)) == 1)
             continue;
         dir = NULL;
         n = flag == 0 ? 0 : n;
@@ -121,23 +132,32 @@ void mx_which(char** parsed) {
 	bool flag_a = false;
 	bool flag_s = false;
 
+    bool is_build_in_comand = false;
+
 	int res = 0;
 	if(size == 1) return;
 	int parse_flag_res = parse_flag(parsed, &flag_a, &flag_s);
 
 	if(parse_flag_res < 0) return;
-	if(!check_reserved_words(parsed)) return;
-    if(!check_reserved_comands(parsed)) return;
+	if(!check_reserved_words(parsed, flag_a)) return;
+    check_reserved_comands(parsed, &is_build_in_comand, flag_a);
 
 	int flag = 0;
 
 	for (int i = 1 + parse_flag_res; i < size; i++) {
         flag  = go_into_dir(parsed[i], &flag_a, &flag_s, parse_flag_res);
         res = parse_flag_res ? 1 : res;
-        if (flag  == 1 && !flag_s) {
-            write(2, parsed[i], mx_strlen(parsed[i]));
-            write(2, " not found\n", 11);
+        if (flag  == 1 && !flag_s && !is_build_in_comand) {
+            mx_printstr(parsed[i]);
+            mx_printstr(" not found\n");
         }
+        if(flag_a) {
+            //mx_printint(flag);
+            if(flag == 0) mx_printchar('0');
+            else mx_printint(flag);
+            mx_printchar('\n');
+        }
+        
     }
 }
 

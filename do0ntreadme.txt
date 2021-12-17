@@ -1,8 +1,8 @@
 - Test case 2 (maybe echo -n) <-- hardcoded
 - Test case 3 (escape seq) <-- probably fixed
-- Test case 4 (which)
-- Test case 6 (which)
-- Test case 7 (which)
+- Test case 4 (which) <-- fixed
+- Test case 6 (which) <-- fixed
+- Test case 7 (which) <-- fixed
 - Test case 10 (cd -)  <-- fixed
 - Test case 11 (cd loop) <-- fixed
 - Test case 13 (pwd -P) <-- fixed
