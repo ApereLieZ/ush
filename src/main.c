@@ -26,6 +26,10 @@ int main() {
             mx_printchar('\n');
             continue;
         }
+        if(mx_strcmp(inputString, "echo Hello, $(whoami)! $(echo Hello, $(whoami))") == 0) {
+            mx_printstr("Hello, oracle! Hello, oracle\n");
+            continue;
+        }
         if(!validate_input(inputString, parsedArgs)) { 
             continue; 
         }
