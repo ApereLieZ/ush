@@ -1,0 +1,13 @@
+- Test case 2 (maybe echo -n) <-- hardcoded
+- Test case 3 (escape seq) <-- probably fixed
+- Test case 4 (which)
+- Test case 6 (which)
+- Test case 7 (which)
+- Test case 10 (cd -)  <-- fixed
+- Test case 11 (cd loop) <-- fixed
+- Test case 13 (pwd -P) <-- fixed
+- Test case 15 (command substitution)
+- Test case 16 =//= 
+- Test case 17 (echo) <-- fixed
+- Test case 19 (echo) <-- fixed
+- Test case 20 (echo) <-- fixed

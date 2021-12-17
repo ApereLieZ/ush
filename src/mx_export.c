@@ -7,6 +7,12 @@ bool comp (char *s1, char *s2) {
     }
     return *s1 < *s2;
 }
+extern char **environ;
+static int size_of_environ() {
+    int i;
+    for(i = 0; environ[i] != NULL; i++) {}
+    return i;
+}
 
 void mx_export (char** parsed) {
     parsed++;
@@ -20,13 +26,18 @@ void mx_export (char** parsed) {
                 value--;
                 mx_strdel(&value);
             }
-            else setenv(name, "", 1);
+            else {
+                name = mx_strdup(*parsed);
+                setenv(name, "\'\'", 1);
+            }
+            char *temp = environ[size_of_environ() - 1];
+            environ[size_of_environ() - 1] = environ[size_of_environ() - 2];
+            environ[size_of_environ() - 2] = temp;
             mx_strdel(&name);
             parsed++;
         }
     }
     else {
-        extern char** environ;
         int e_size = 0;
         for (int i = 0; environ[i] != NULL; i++) {
             e_size++;
@@ -36,12 +47,12 @@ void mx_export (char** parsed) {
             e[i] = mx_strdup(environ[i]);
         }
         e[e_size] = NULL;
-        mx_bubble_sort(e, e_size, comp);
+        //mx_bubble_sort(e, e_size, comp);
         for (int i = 0; e[i] != NULL; i++) {
             mx_printstr(e[i]);
             mx_printchar('\n');
         }
-        mx_del_strarr(&e);
+        //mx_del_strarr(&e);
     }
 }
 

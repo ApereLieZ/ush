@@ -17,19 +17,18 @@ static void parce_flag_pwd(char** args, bool* fl_P ) {
 }
 
 void mx_pwd(char** argc) {
-    
+    struct stat buf;
     bool fl_P = false;
     parce_flag_pwd(argc, &fl_P);
-    char str[1024];
-    getcwd(str, 1024);
-    if(fl_P) {
-        mx_printstr(str);
-    }else {
-        if(was_in_link){ 
-            mx_printstr(getenv("LINKPATH"));
-        }
-        else mx_printstr(str);
+    lstat(getenv("PWD"), &buf);
+    if(fl_P && S_ISLNK(buf.st_mode)) {
+        char *temp_buf = mx_strnew(1024);
+        readlink(getenv("PWD"), temp_buf, 1024);
+        mx_printchar('/');
+        mx_printstr(temp_buf);
+        mx_strdel(&temp_buf);
     }
+    else mx_printstr(getenv("PWD"));
     mx_printchar('\n');
 }
     

@@ -1,98 +1,145 @@
 #include"../inc/ush.h"
 
-int parse_flag(char** args, bool *flag_a) {
-    int z = 1;
+char *reserved_words[22] = {"if", "then", "elif", "else", "fi", "time",
+ "for",	"in", "until" , "while", "do", "done", "case",
+ "esac", "coproc", "select", "function",
+ "{", "}", "[[", "]]", "!"};
+
+char *build_in_comands[60] = {":", ".", "[", "alias", "bg", "bind", "break", "builtin", "case",
+ "cd", "command", "compgen", "complete", "continue", "declare", "dirs", "disown", "echo",
+  "enable", "eval", "exec", "exit", "export", "fc", "fg", "getopts", "hash", "help", "history",
+   "if", "jobs", "kill", "let", "local", "logout", "popd", "printf", "pushd", "pwd", "read",
+    "readonly", "return", "set", "shift", "shopt", "source", "suspend", "test", "times", "trap",
+	 "type", "typeset", "ulimit", "umask", "unalias", "unset", "until", "wait", "while", "\0"}; 
+
+static int count_args(char **args) {
+    int i;
+    for(i = 0; args[i] != NULL; i++);
+    return i;
+}
+
+bool check_reserved_comands(char** parsed) {
+	for(int i = 1; parsed[i] != NULL; i++) {
+		for(int j = 0; build_in_comands[j]; j++) {
+			if(mx_strcmp(parsed[i], build_in_comands[j]) == 0) {
+				mx_printstr(build_in_comands[j]);
+				mx_printstr(": ush built-in command\n");
+			}
+		}
+	}
+	return true;
+}
+
+
+bool check_reserved_words(char** parsed) {
+	for(int i = 1; parsed[i] != NULL; i++) {
+		for(int j = 0; j < 22; j++) {
+			if(mx_strcmp(parsed[i], reserved_words[j]) == 0) {
+				mx_printstr(reserved_words[j]);
+				mx_printstr(": ush reserved word\n");
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+int parse_flag(char** args, bool *flag_a, bool *flag_s) {
+    int z = 0;
     for(int i = 0; args[i] != NULL; i++) {
         if(args[i][0] == '-') {
             z++;
             for(int j = 0; j < mx_strlen(args[i]); j++) {
                 if(args[i][j] == 'a') *flag_a = true;
+				else if(args[i][j] == 's') *flag_s = true;
+				else if(args[i][j] == '-') continue;
+				else {
+					mx_printstr("which: bad option: -");
+					mx_printchar(args[i][j]);
+					mx_printchar('\n');
+					return -1;
+				}
+
             }
         }
     }
     return z;
 }
 
-int Find(char *** list, char * file_name, char * directory, int * location)
-{
-	DIR * opened_dir;
-	struct dirent * directory_structure;
-	
-	char * temp_dir = (char*)malloc(sizeof(char) * 300);
-	if (!temp_dir) return -1;
-	
-	strcat(directory, "/");	
-	opened_dir = opendir(directory);
-	if (opened_dir == NULL) {
-                free (temp_dir);
-                return -1;
+int search_proga(char *str, bool flag_s, char *dir) {
+    DIR *dir1 = NULL;
+    struct dirent *dir2;
+    int flag = 1;
+    
+    dir1 = opendir(dir);
+    if (!dir1)
+        return 1;
+    dir2 = readdir(dir1);
+    while (dir2 != NULL) {
+        if (mx_strcmp(dir2->d_name, str) == 0) {
+            if (flag_s) {
+                mx_printstr(dir);
+                mx_printchar('/');
+                mx_printstr(dir2->d_name);
+                mx_printchar('\n');
+            }
+            flag = 0;
+            break;
         }
-	
-	while (1) {
-		directory_structure = readdir(opened_dir);
-		if (!directory_structure) {
-            mx_printstr("sdaasdasdasdasd");
-			closedir(opened_dir);
-			free (temp_dir);
-			return 0;
-		}
-		if (!strcmp(directory_structure->d_name, "..") || 
-			!strcmp(directory_structure->d_name, ".")) continue;	
-		
-		else if (!strcmp(directory_structure->d_name, file_name)) {
-			(*list)[*location] = (char*)malloc(sizeof(char) * 300);
-			sprintf((*list)[*location], "%s%s", directory, directory_structure->d_name);
-			(*location)++;
-		}
-		else if (directory_structure->d_type == DT_DIR) {
-			sprintf(temp_dir, "%s%s", directory, directory_structure->d_name);
-			if (Find(list, file_name, temp_dir, location) == -1) {
-				closedir(opened_dir);
-				free (temp_dir);
-				return -1;
-			}
-		}
-	}
-				
-	return 0;
+        dir2 = readdir(dir1);
+    }
+    closedir(dir1);
+    return flag;
 }
 
+int go_into_dir(char *str, bool *flag_a, bool *flag_s, int flag) {
+    char *temp = NULL;
+    int y = 0;
+    int r = 0;
+    char *dir = NULL;
+    int b = 0;
+   
+    int n = 1;
+    temp = getenv("PATH");
+    for (; r != -1; y = y + r + 1) {
+        r = mx_get_char_index(&temp[y], ':');
+        dir = mx_strnew(mx_strlen(temp));
+        for (b = y; r >= 0 ? b < r + y : temp[b] != '\0'; b++)
+            dir[b - y] = temp[b];
+        if ((flag = search_proga(str, flag_s, dir)) == 1)
+            continue;
+        dir = NULL;
+        n = flag == 0 ? 0 : n;
+        if (flag == 0 && !flag_a)
+            break;
+    }
+    return n;
+}
 
+void mx_which(char** parsed) {
+	int size = count_args(parsed);
+	bool flag_a = false;
+	bool flag_s = false;
 
+	int res = 0;
+	if(size == 1) return;
+	int parse_flag_res = parse_flag(parsed, &flag_a, &flag_s);
 
-void mx_which(char** args) {
-    bool flag_a = false;
-    int loca = parse_flag(args,  &flag_a);
-    char ** found_list = (char**)malloc(sizeof(char*) * 30);
-	if (!found_list) return;
+	if(parse_flag_res < 0) return;
+	if(!check_reserved_words(parsed)) return;
+    if(!check_reserved_comands(parsed)) return;
 
-	int counter_location = 0;
-	
-	char * ini_dir = (char*)malloc(sizeof(char) * 500);
-	if (!ini_dir) {
-		free (found_list);
-		return;
-	}
+	int flag = 0;
 
-	if (args[loca]) strcpy(ini_dir, args[loca]);
-
-    Find(&found_list, args[loca], ini_dir, &counter_location);
-
-	
-	if (counter_location > 0) {
-		while (--counter_location >= 0) {
-			printf("%s\n", found_list[counter_location]);
-			free (found_list[counter_location]);
-		}
-	}
-	else {
-		printf("Failed to find the file!\n");
-	}
-
-	free (ini_dir);
-	free (found_list);
-
-}   
+	for (int i = 1 + parse_flag_res; i < size; i++) {
+        flag  = go_into_dir(parsed[i], &flag_a, &flag_s, parse_flag_res);
+        res = parse_flag_res ? 1 : res;
+        if (flag  == 1 && !flag_s) {
+            write(2, parsed[i], mx_strlen(parsed[i]));
+            write(2, " not found\n", 11);
+        }
+    }
+}
 
 
 

@@ -90,6 +90,15 @@ char *mx_strchr(const char *s, int c);
 char **copy_strarr(char **arr, const int size);
 int mx_getopt(int argc, char * const argv[], const char *optstring);
 char *cat_str_array(char **array, char *delim);
+void arr_pop_back(int **arr, int size);
+void arr_push_back(int **arr, int value, int size);
+bool is_in_arr(int *arr, int el, int size);
+void arr_pop_index(int **arr, int index, int size);
+void strarr_push_back(char ***arr, char *value, int size);
+void strarr_pop_back(char ***arr, int size);
+void strarr_pop_index(char ***arr, int index, int size);
+void str_push_back(char **arr, char value, int size);
+void swap_strings(char **str1, char **str2);
 
 extern char *optarg;
 extern int optind, opterr, optopt, optreset;
