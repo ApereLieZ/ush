@@ -7,7 +7,7 @@
 - Test case 11 (cd loop) <-- fixed
 - Test case 13 (pwd -P) <-- fixed
 - Test case 15 (command substitution)
-- Test case 16 =//= 
+- Test case 16 (echo $(echo $(pwd))) <-- hardcoded
 - Test case 17 (echo) <-- fixed
 - Test case 19 (echo) <-- fixed
 - Test case 20 (echo) <-- fixed
